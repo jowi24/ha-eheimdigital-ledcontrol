@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import Any, override
 
 from .lib.device import EheimDigitalDevice
+from .lib.ph_control import EheimDigitalPHControl
 from .lib.reeflex import EheimDigitalReeflexUV
 
 from homeassistant.components.binary_sensor import (
@@ -50,6 +51,17 @@ REEFLEX_DESCRIPTIONS: tuple[
     ),
 )
 
+PHCONTROL_DESCRIPTIONS: tuple[
+    EheimDigitalBinarySensorDescription[EheimDigitalPHControl], ...
+] = (
+    EheimDigitalBinarySensorDescription[EheimDigitalPHControl](
+        key="valve_is_active",
+        translation_key="valve_is_active",
+        value_fn=lambda device: device.valve_is_active,
+        device_class=BinarySensorDeviceClass.RUNNING,
+    ),
+)
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -65,6 +77,13 @@ async def async_setup_entry(
         """Set up the binary sensor entities for one or multiple devices."""
         entities: list[EheimDigitalBinarySensor[Any]] = []
         for device in device_address.values():
+            if isinstance(device, EheimDigitalPHControl):
+                entities.extend(
+                    EheimDigitalBinarySensor[EheimDigitalPHControl](
+                        coordinator, device, description
+                    )
+                    for description in PHCONTROL_DESCRIPTIONS
+                )
             if isinstance(device, EheimDigitalReeflexUV):
                 entities += [
                     EheimDigitalBinarySensor[EheimDigitalReeflexUV](

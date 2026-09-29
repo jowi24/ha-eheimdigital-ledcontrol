@@ -19,6 +19,8 @@ light entity.
 
 This project is an interim solution until the corresponding support is merged
 into the official `eheimdigital` library and Home Assistant integration.
+It retains the pH-Control entities alongside the additional LEDcontrol+
+support.
 
 ## Upstream tracking
 

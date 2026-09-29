@@ -40,6 +40,9 @@
       },
       "is_uvc_connected": {
         "name": "UVC lamp connected"
+      },
+      "valve_is_active": {
+        "name": "CO2 valve"
       }
     },
     "climate": {
@@ -79,6 +82,12 @@
       "high_pulse_time": {
         "name": "High pulse duration"
       },
+      "hyst_high": {
+        "name": "Upper hysteresis threshold"
+      },
+      "hyst_low": {
+        "name": "Lower hysteresis threshold"
+      },
       "low_pulse_time": {
         "name": "Low pulse duration"
       },
@@ -91,7 +100,16 @@
       "night_temperature_offset": {
         "name": "Night temperature offset"
       },
+      "night_ph_offset": {
+        "name": "Night pH offset"
+      },
+      "offset": {
+        "name": "pH offset"
+      },
       "pause_time": { "name": "Pause duration" },
+      "soll_ph": {
+        "name": "Target pH"
+      },
       "system_led": {
         "name": "System LED brightness"
       },
@@ -130,6 +148,13 @@
       },
       "night_speed": {
         "name": "Night speed"
+      },
+      "ph_control_mode": {
+        "name": "Operation mode",
+        "state": {
+          "daycl_mode": "Daycycle",
+          "manual_mode": "Manual"
+        }
       }
     },
     "sensor": {
@@ -144,8 +169,26 @@
           "rotor_stuck": "Rotor stuck"
         }
       },
+      "is_ph": {
+        "name": "Current pH"
+      },
+      "kh": {
+        "name": "Carbonate hardness"
+      },
       "operating_time": {
         "name": "Operating time"
+      },
+      "ph_control_alert_state": {
+        "name": "Alert state",
+        "state": {
+          "electrode_missing": "Electrode missing",
+          "no_error": "No error",
+          "ph_too_high": "pH too high",
+          "ph_too_low": "pH too low"
+        }
+      },
+      "ph_control_service_time": {
+        "name": "Time until electrode calibration"
       },
       "remaining_booster_time": {
         "name": "Remaining booster time"
@@ -167,6 +210,9 @@
       }
     },
     "switch": {
+      "acclimatization": {
+        "name": "Acclimatization"
+      },
       "booster": {
         "name": "Booster"
       },

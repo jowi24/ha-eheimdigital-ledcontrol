@@ -7,6 +7,7 @@ from typing import Any, override
 from .lib.classic_vario import EheimDigitalClassicVario
 from .lib.device import EheimDigitalDevice
 from .lib.filter import EheimDigitalFilter
+from .lib.ph_control import EheimDigitalPHControl
 from .lib.reeflex import EheimDigitalReeflexUV
 
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
@@ -64,6 +65,32 @@ REEFLEX_DESCRIPTIONS: tuple[
     ),
 )
 
+PHCONTROL_DESCRIPTIONS: tuple[
+    EheimDigitalSwitchDescription[EheimDigitalPHControl], ...
+] = (
+    EheimDigitalSwitchDescription[EheimDigitalPHControl](
+        key="active",
+        name=None,
+        entity_category=EntityCategory.CONFIG,
+        is_on_fn=lambda device: device.is_active,
+        set_fn=lambda device, value: device.set_active(active=value),
+    ),
+    EheimDigitalSwitchDescription[EheimDigitalPHControl](
+        key="acclimatization",
+        translation_key="acclimatization",
+        entity_category=EntityCategory.CONFIG,
+        is_on_fn=lambda device: device.acclimatization,
+        set_fn=lambda device, value: device.set_acclimatization(value=value),
+    ),
+    EheimDigitalSwitchDescription[EheimDigitalPHControl](
+        key="expert",
+        translation_key="expert",
+        entity_category=EntityCategory.CONFIG,
+        is_on_fn=lambda device: device.expert,
+        set_fn=lambda device, value: device.set_expert(value=value),
+    ),
+)
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -81,6 +108,13 @@ async def async_setup_entry(
         for device in device_address.values():
             if isinstance(device, (EheimDigitalClassicVario, EheimDigitalFilter)):
                 entities.append(EheimDigitalFilterSwitch(coordinator, device))
+            if isinstance(device, EheimDigitalPHControl):
+                entities.extend(
+                    EheimDigitalSwitch[EheimDigitalPHControl](
+                        coordinator, device, description
+                    )
+                    for description in PHCONTROL_DESCRIPTIONS
+                )
             if isinstance(device, EheimDigitalReeflexUV):
                 entities.extend(
                     EheimDigitalSwitch[EheimDigitalReeflexUV](

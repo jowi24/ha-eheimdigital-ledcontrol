@@ -8,6 +8,7 @@ from .lib.classic_vario import EheimDigitalClassicVario
 from .lib.device import EheimDigitalDevice
 from .lib.filter import EheimDigitalFilter
 from .lib.heater import EheimDigitalHeater
+from .lib.ph_control import EheimDigitalPHControl
 from .lib.reeflex import EheimDigitalReeflexUV
 from .lib.types import HeaterUnit
 
@@ -110,6 +111,63 @@ FILTER_DESCRIPTIONS: tuple[EheimDigitalNumberDescription[EheimDigitalFilter], ..
         native_max_value=200000,
         value_fn=lambda device: device.low_pulse_time,
         set_value_fn=lambda device, value: device.set_low_pulse_time(int(value)),
+    ),
+)
+
+PHCONTROL_DESCRIPTIONS: tuple[
+    EheimDigitalNumberDescription[EheimDigitalPHControl], ...
+] = (
+    EheimDigitalNumberDescription[EheimDigitalPHControl](
+        key="soll_ph",
+        translation_key="soll_ph",
+        entity_category=EntityCategory.CONFIG,
+        native_min_value=0,
+        native_max_value=14,
+        native_step=PRECISION_TENTHS,
+        value_fn=lambda device: device.soll_ph,
+        set_value_fn=lambda device, value: device.set_soll_ph(value),
+    ),
+    EheimDigitalNumberDescription[EheimDigitalPHControl](
+        key="hyst_low",
+        translation_key="hyst_low",
+        entity_category=EntityCategory.CONFIG,
+        native_min_value=0,
+        native_max_value=14,
+        native_step=PRECISION_TENTHS,
+        value_fn=lambda device: device.hyst_low,
+        set_value_fn=lambda device, value: device.set_hyst_low(value),
+    ),
+    EheimDigitalNumberDescription[EheimDigitalPHControl](
+        key="hyst_high",
+        translation_key="hyst_high",
+        entity_category=EntityCategory.CONFIG,
+        native_min_value=0,
+        native_max_value=14,
+        native_step=PRECISION_TENTHS,
+        value_fn=lambda device: device.hyst_high,
+        set_value_fn=lambda device, value: device.set_hyst_high(value),
+    ),
+    EheimDigitalNumberDescription[EheimDigitalPHControl](
+        key="offset",
+        translation_key="offset",
+        entity_category=EntityCategory.CONFIG,
+        native_min_value=0,
+        native_max_value=14,
+        native_step=PRECISION_TENTHS,
+        value_fn=lambda device: device.offset,
+        set_value_fn=lambda device, value: device.set_offset(value),
+    ),
+    EheimDigitalNumberDescription[EheimDigitalPHControl](
+        key="night_temperature_offset",
+        translation_key="night_ph_offset",
+        entity_category=EntityCategory.CONFIG,
+        native_min_value=0,
+        native_max_value=14,
+        native_step=PRECISION_TENTHS,
+        value_fn=lambda device: device.night_temperature_offset,
+        set_value_fn=(
+            lambda device, value: device.set_night_temperature_offset(value)
+        ),
     ),
 )
 
@@ -230,6 +288,13 @@ async def async_setup_entry(
                         coordinator, device, description
                     )
                     for description in HEATER_DESCRIPTIONS
+                )
+            if isinstance(device, EheimDigitalPHControl):
+                entities.extend(
+                    EheimDigitalNumber[EheimDigitalPHControl](
+                        coordinator, device, description
+                    )
+                    for description in PHCONTROL_DESCRIPTIONS
                 )
             if isinstance(device, EheimDigitalReeflexUV):
                 entities.extend(

@@ -7,7 +7,8 @@ from typing import Any, override
 from .lib.classic_vario import EheimDigitalClassicVario
 from .lib.device import EheimDigitalDevice
 from .lib.filter import EheimDigitalFilter
-from .lib.types import FilterErrorCode
+from .lib.ph_control import EheimDigitalPHControl
+from .lib.types import FilterErrorCode, PHControlErrorCode
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -83,6 +84,40 @@ CLASSICVARIO_DESCRIPTIONS: tuple[
     ),
 )
 
+PHCONTROL_DESCRIPTIONS: tuple[
+    EheimDigitalSensorDescription[EheimDigitalPHControl], ...
+] = (
+    EheimDigitalSensorDescription[EheimDigitalPHControl](
+        key="is_ph",
+        translation_key="is_ph",
+        value_fn=lambda device: device.is_ph,
+        device_class=SensorDeviceClass.PH,
+        suggested_display_precision=1,
+    ),
+    EheimDigitalSensorDescription[EheimDigitalPHControl](
+        key="kh",
+        translation_key="kh",
+        value_fn=lambda device: device.kh,
+        native_unit_of_measurement="°dH",
+    ),
+    EheimDigitalSensorDescription[EheimDigitalPHControl](
+        key="alert_state",
+        translation_key="ph_control_alert_state",
+        value_fn=lambda device: device.alert_state.name.lower(),
+        device_class=SensorDeviceClass.ENUM,
+        options=[name.lower() for name in PHControlErrorCode._member_names_],
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    EheimDigitalSensorDescription[EheimDigitalPHControl](
+        key="service_time",
+        translation_key="ph_control_service_time",
+        value_fn=lambda device: device.service_time,
+        device_class=SensorDeviceClass.DURATION,
+        native_unit_of_measurement=UnitOfTime.DAYS,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+)
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -111,6 +146,13 @@ async def async_setup_entry(
                         coordinator, device, description
                     )
                     for description in CLASSICVARIO_DESCRIPTIONS
+                ]
+            if isinstance(device, EheimDigitalPHControl):
+                entities += [
+                    EheimDigitalSensor[EheimDigitalPHControl](
+                        coordinator, device, description
+                    )
+                    for description in PHCONTROL_DESCRIPTIONS
                 ]
 
         async_add_entities(entities)

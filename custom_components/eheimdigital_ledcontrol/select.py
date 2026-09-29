@@ -7,10 +7,12 @@ from typing import Any, Literal, override
 from .lib.classic_vario import EheimDigitalClassicVario
 from .lib.device import EheimDigitalDevice
 from .lib.filter import EheimDigitalFilter
+from .lib.ph_control import EheimDigitalPHControl
 from .lib.reeflex import EheimDigitalReeflexUV
 from .lib.types import (
     FilterMode,
     FilterModeProf,
+    PHControlMode,
     ReeflexMode,
     UnitOfMeasurement as EheimDigitalUnitOfMeasurement,
 )
@@ -49,6 +51,21 @@ REEFLEX_DESCRIPTIONS: tuple[
             lambda device, value: device.set_mode(ReeflexMode[value.upper()])
         ),
         options=[name.lower() for name in ReeflexMode.__members__],
+    ),
+)
+
+PHCONTROL_DESCRIPTIONS: tuple[
+    EheimDigitalSelectDescription[EheimDigitalPHControl], ...
+] = (
+    EheimDigitalSelectDescription[EheimDigitalPHControl](
+        key="mode",
+        translation_key="ph_control_mode",
+        entity_category=EntityCategory.CONFIG,
+        value_fn=lambda device: device.mode.name.lower(),
+        set_value_fn=(
+            lambda device, value: device.set_mode(PHControlMode[value.upper()])
+        ),
+        options=[name.lower() for name in PHControlMode.__members__],
     ),
 )
 
@@ -191,6 +208,13 @@ async def async_setup_entry(
                 entities.extend(
                     EheimDigitalFilterSelect(coordinator, device, description)
                     for description in FILTER_DESCRIPTIONS
+                )
+            if isinstance(device, EheimDigitalPHControl):
+                entities.extend(
+                    EheimDigitalSelect[EheimDigitalPHControl](
+                        coordinator, device, description
+                    )
+                    for description in PHCONTROL_DESCRIPTIONS
                 )
             if isinstance(device, EheimDigitalReeflexUV):
                 entities.extend(

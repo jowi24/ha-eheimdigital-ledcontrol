@@ -9,6 +9,7 @@ from .lib.classic_vario import EheimDigitalClassicVario
 from .lib.device import EheimDigitalDevice
 from .lib.filter import EheimDigitalFilter
 from .lib.heater import EheimDigitalHeater
+from .lib.ph_control import EheimDigitalPHControl
 from .lib.reeflex import EheimDigitalReeflexUV
 
 from homeassistant.components.time import TimeEntity, TimeEntityDescription
@@ -93,6 +94,25 @@ HEATER_DESCRIPTIONS: tuple[EheimDigitalTimeDescription[EheimDigitalHeater], ...]
     ),
 )
 
+PHCONTROL_DESCRIPTIONS: tuple[
+    EheimDigitalTimeDescription[EheimDigitalPHControl], ...
+] = (
+    EheimDigitalTimeDescription[EheimDigitalPHControl](
+        key="day_start_time",
+        translation_key="day_start_time",
+        entity_category=EntityCategory.CONFIG,
+        value_fn=lambda device: device.day_start_time,
+        set_value_fn=lambda device, value: device.set_day_start_time(value),
+    ),
+    EheimDigitalTimeDescription[EheimDigitalPHControl](
+        key="night_start_time",
+        translation_key="night_start_time",
+        entity_category=EntityCategory.CONFIG,
+        value_fn=lambda device: device.night_start_time,
+        set_value_fn=lambda device, value: device.set_night_start_time(value),
+    ),
+)
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -128,6 +148,13 @@ async def async_setup_entry(
                         coordinator, device, description
                     )
                     for description in HEATER_DESCRIPTIONS
+                )
+            if isinstance(device, EheimDigitalPHControl):
+                entities.extend(
+                    EheimDigitalTime[EheimDigitalPHControl](
+                        coordinator, device, description
+                    )
+                    for description in PHCONTROL_DESCRIPTIONS
                 )
             if isinstance(device, EheimDigitalReeflexUV):
                 entities.extend(
