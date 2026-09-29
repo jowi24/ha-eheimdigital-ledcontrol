@@ -46,6 +46,11 @@ async def async_setup_entry(
     )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    coordinator.known_devices.update(
+        address
+        for address, device in coordinator.hub.devices.items()
+        if not device.is_missing_data
+    )
 
     return True
 
