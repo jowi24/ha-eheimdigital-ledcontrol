@@ -20,6 +20,20 @@ light entity.
 This project is an interim solution until the corresponding support is merged
 into the official `eheimdigital` library and Home Assistant integration.
 
+## Upstream tracking
+
+The LEDcontrol+ (`version: 3`) work is being tracked upstream:
+
+- [Home Assistant Core issue #160502](https://github.com/home-assistant/core/issues/160502)
+  documents the reported device format and the missing support.
+- [Home Assistant Core PR #177948](https://github.com/home-assistant/core/pull/177948)
+  is the current broader EHEIM Digital integration refactor.
+- [eheimdigital Codeberg PR #8](https://codeberg.org/autinerd/eheimdigital/pulls/8)
+  contains the initial library-side LEDcontrol+ implementation.
+
+This custom integration carries the required library and integration changes
+while those upstream contributions are reviewed and released.
+
 ## Installation
 
 1. Install [HACS](https://hacs.xyz/) if it is not installed already.
