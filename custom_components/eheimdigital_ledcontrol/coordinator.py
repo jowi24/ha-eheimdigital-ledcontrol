@@ -83,6 +83,7 @@ class EheimDigitalUpdateCoordinator(
         ):
             for platform_callback in self.platform_callbacks:
                 platform_callback({device_address: self.hub.devices[device_address]})
+            self.known_devices.add(device_address)
             if device_address in self.incomplete_devices:
                 self.incomplete_devices.remove(device_address)
 

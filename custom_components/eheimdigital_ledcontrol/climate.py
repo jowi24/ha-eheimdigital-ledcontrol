@@ -46,7 +46,6 @@ async def async_setup_entry(
         for device in device_address.values():
             if isinstance(device, EheimDigitalHeater):
                 entities.append(EheimDigitalHeaterClimate(coordinator, device))
-                coordinator.known_devices.add(device.mac_address)
 
         async_add_entities(entities)
 

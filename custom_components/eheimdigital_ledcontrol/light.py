@@ -58,7 +58,6 @@ async def async_setup_entry(
                                 coordinator, device, channel
                             )
                         )
-                        coordinator.known_devices.add(device.mac_address)
 
         async_add_entities(entities)
 
