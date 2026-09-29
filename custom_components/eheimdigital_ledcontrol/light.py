@@ -44,6 +44,8 @@ async def async_setup_entry(
         entities: list[EheimDigitalClassicLEDControlLight] = []
         for device in device_address.values():
             if isinstance(device, EheimDigitalClassicLEDControl):
+                if device.is_missing_data:
+                    continue
                 channel_count = (
                     device.number_of_channels
                     if isinstance(device, EheimDigitalLEDControl)

@@ -330,7 +330,14 @@ class EheimDigitalNumber[_DeviceT: EheimDigitalDevice](
         """Initialize an EHEIM Digital number entity."""
         super().__init__(coordinator, device)
         self.entity_description = description
-        self._attr_unique_id = f"{self._device_address}_{description.key}"
+        if description.key == "system_led" and not isinstance(
+            device, EheimDigitalPHControl
+        ):
+            self._attr_unique_id = (
+                f"{self._device_address}_{device.device_type.value}_{description.key}"
+            )
+        else:
+            self._attr_unique_id = f"{self._device_address}_{description.key}"
 
     @override
     @exception_handler
