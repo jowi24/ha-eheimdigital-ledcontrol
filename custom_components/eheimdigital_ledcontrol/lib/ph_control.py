@@ -76,7 +76,7 @@ class EheimDigitalPHControl(EheimDigitalDevice):
             _LOGGER.error("set_ph_param: No PH_DATA packet received yet.")
             return
         await self.hub.send_packet({
-            "title": self.ph_data["title"],
+            "title": MsgTitle.SET_PH_PARAM,
             "to": self.mac_address,
             "sollPH": self.ph_data["sollPH"],
             "active": self.ph_data["active"],
